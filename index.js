@@ -3,8 +3,9 @@ require("dotenv").config(); // Charger les variables d’environnement
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
-app.use(cors());
-const app = express();
+
+const app = express(); // <- créer l'app express **avant** d'utiliser app.use
+app.use(cors()); // <- middleware CORS
 
 const apiKey = process.env.MARVEL_API_KEY;
 
@@ -94,6 +95,8 @@ app.all(/.*/, (req, res) => {
   res.status(404).json({ error: "Page introuvable" });
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server Started 🦸🏽‍♀️🦸🏽‍♀️🦸🏽‍♀️");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
 });
