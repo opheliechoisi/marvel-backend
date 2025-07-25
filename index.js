@@ -43,7 +43,7 @@ app.get("/characters", async (req, res) => {
       apiKey,
       ...(limit && { limit }),
       ...(skip && { skip }),
-      ...(name && { name }),
+      ...(name && { nameStartsWith: name }),
     };
 
     const response = await axios.get(apiUrl, { params });
