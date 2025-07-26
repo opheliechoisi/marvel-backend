@@ -1,4 +1,4 @@
-require("dotenv").config(); // Charger les variables d’environnement
+/*require("dotenv").config(); // Charger les variables d’environnement
 
 const express = require("express");
 const cors = require("cors");
@@ -91,12 +91,71 @@ app.get("/comic/:comicId", async (req, res) => {
 });
 
 // === Route 404 (catch-all) ===
-app.all(/.*/, (req, res) => {
-  res.status(404).json({ error: "Page introuvable" });
+app.all(/.*/ /*, /*(req, res) => {
+ /* res.status(404).json({ error: "Page introuvable" });
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
+})*/
+
+require("dotenv").config();
+const express = require("express");
+const axios = require("axios");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+//                ROUTE PERSONNAGES                   //
+app.get("/characters", async (req, res) => {
+  try {
+    const name = req.query.name || "";
+    const skip = req.query.skip || 0;
+    const limit = req.query.limit || 100;
+
+    const response = await axios.get(
+      `https://lereacteur-marvel-api.herokuapp.com/characters?apiKey=${process.env.MARVEL_API_KEY}&name=${name}&skip=${skip}&limit=${limit}`
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+//          ROUTE COMICS            //
+app.get("/comics", async (req, res) => {
+  try {
+    const title = req.query.title || "";
+    const skip = req.query.skip || 0;
+    const limit = req.query.limit || 100;
+
+    const response = await axios.get(
+      `https://lereacteur-marvel-api.herokuapp.com/comics?apiKey=${process.env.MARVEL_API_KEY}&title=${title}&skip=${skip}&limit=${limit}`
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+//                  ROUTE COMICS CHARACTER ID                 //
+app.get("/comics/:characterID", async (req, res) => {
+  try {
+    const { characterId } = req.params;
+
+    const response = await axios.get(
+      `https://lereacteur-marvel-api.herokuapp.com/comics/${characterId}?apiKey=${MARVEL_API_KEY}`
+    );
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.all(/.*/, (req, res) => {
+  res.status(404).json({ message: "This route does not exist" });
+});
+
+app.listen(process.env.PORT, () => {
+  console.log("Server started");
 });
