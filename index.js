@@ -140,17 +140,20 @@ app.get("/comics", async (req, res) => {
     console.log(error);
   }
 });
-//                  ROUTE COMICS CHARACTER ID                 //
+//         ROUTE COMICS CHARACTER ID           //
 app.get("/comics/:characterId", async (req, res) => {
   try {
     const { characterId } = req.params;
 
     const response = await axios.get(
-      `https://lereacteur-marvel-api.herokuapp.com/comics/${characterId}?apiKey=${MARVEL_API_KEY}`
+      `https://lereacteur-marvel-api.herokuapp.com/comics/${characterId}?apiKey=${process.env.MARVEL_API_KEY}`
     );
     res.json(response.data);
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      message: "Erreur lors de la récupération des comics liés au personnage",
+    });
   }
 });
 
